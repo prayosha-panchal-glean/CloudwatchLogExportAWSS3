@@ -73,7 +73,7 @@ Before deploying this solution, ensure you have:
 
 <YOUR_BUCKET_NAME>: Your destination S3 bucket name.
 <YOUR_REGION>: Your AWS region (e.g., ap-southeast-1).
-DESTINATION_ACCOUNT_ID: Your AWS account ID.
+<SOURCE_ACCOUNT_ID>: Your AWS account ID.
 <LAMBDA_EXECUTION_ROLE_ARN>: The Lambda execution role ARN from your CloudFormation stack outputs.
 
 
@@ -91,10 +91,10 @@ DESTINATION_ACCOUNT_ID: Your AWS account ID.
       "Resource": "arn:aws:s3:::<YOUR_BUCKET_NAME>",
       "Condition": {
         "StringEquals": {
-          "aws:SourceAccount": "DESTINATION_ACCOUNT_ID"
+          "aws:SourceAccount": "SOURCE_ACCOUNT_ID"
         },
         "ArnLike": {
-          "aws:SourceArn": "arn:aws:logs:<YOUR_REGION>:DESTINATION_ACCOUNT_ID:log-group:*"
+          "aws:SourceArn": "arn:aws:logs:<YOUR_REGION>:SOURCE_ACCOUNT_ID:log-group:*"
         }
       }
     },
@@ -108,10 +108,10 @@ DESTINATION_ACCOUNT_ID: Your AWS account ID.
       "Condition": {
         "StringEquals": {
           "s3:x-amz-acl": "bucket-owner-full-control",
-          "aws:SourceAccount": "DESTINATION_ACCOUNT_ID"
+          "aws:SourceAccount": "SOURCE_ACCOUNT_ID"
         },
         "ArnLike": {
-          "aws:SourceArn": "arn:aws:logs:<YOUR_REGION>:DESTINATION_ACCOUNT_ID:log-group:*"
+          "aws:SourceArn": "arn:aws:logs:<YOUR_REGION>:SOURCE_ACCOUNT_ID:log-group:*"
         }
       }
     },
@@ -181,7 +181,7 @@ DESTINATION_ACCOUNT_ID: Your AWS account ID.
 
 ### Maintenance Tasks
 - **Adding new log groups:** Update the `LogGroupsList` parameter and perform a stack update
-- **Modifying export frequency:** Edit the CloudWatch Event rule schedule expression (e.g., change `rate(1 hour)` to `rate(30 minutes)`)
+- **Modifying export frequency:** Edit the CloudWatch Event rule schedule expression (e.g., change `rate(15 minutes)` to `rate(30 minutes)`)
 
 ## Troubleshooting
 
@@ -203,7 +203,7 @@ A: It exports from the log group creation time if available; otherwise, it expor
 A: It maintains timestamp files in S3 to track the last export time for each log group.
 
 **Q: What happens if the Lambda function fails?**  
-A: It retries on the next scheduled execution (hourly). Logs are not lost since timestamps update only after successful exports.
+A: It retries on the next scheduled execution (every 15b minutes). Logs are not lost since timestamps update only after successful exports.
 
 **Q: How much does this solution cost?**  
 A: Costs vary based on log volume and frequency, including Lambda execution, CloudWatch API calls, S3 storage, and CloudWatch Events rules.
