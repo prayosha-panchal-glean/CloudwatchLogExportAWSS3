@@ -17,7 +17,7 @@ Before deploying this solution, ensure you have:
 
 ## Architecture Diagram
 
-![Diagram](./Screenshot 2025-03-21 at 7.12.22 PM.png)
+![Diagram](./diagram.png)
   
 
 ## Deployment Steps
