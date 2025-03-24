@@ -64,9 +64,17 @@ Before deploying this solution, ensure you have:
 1. Navigate to the **S3 console** > **Destination Bucket**
 2. Go to the **Permissions** tab
 3. Click **Bucket Policy**
-4. Replace placeholders in the following bucket policy, or add these statements to an existing policy:
+   **CAUTION:** Make sure that there are no conflicting Deny Statements in bucket policy /SCP for organization
+5. Replace placeholders in the following bucket policy, or add these statements to an existing policy:
+
+<YOUR_BUCKET_NAME>: Your destination S3 bucket name.
+<YOUR_REGION>: Your AWS region (e.g., ap-southeast-1).
+DESTINATION_ACCOUNT_ID: Your AWS account ID.
+<LAMBDA_EXECUTION_ROLE_ARN>: The Lambda execution role ARN from your CloudFormation stack outputs.
+
 
 ```json
+
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -102,6 +110,33 @@ Before deploying this solution, ensure you have:
           "aws:SourceArn": "arn:aws:logs:<YOUR_REGION>:DESTINATION_ACCOUNT_ID:log-group:*"
         }
       }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "<LAMBDA_EXECUTION_ROLE_ARN>"
+      },
+      "Action": "s3:PutObject",
+      "Resource": "arn:aws:s3:::<YOUR_BUCKET_NAME>/*",
+      "Condition": {
+        "StringEquals": {
+          "s3:x-amz-acl": "bucket-owner-full-control"
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "<LAMBDA_EXECUTION_ROLE_ARN>"
+      },
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<YOUR_BUCKET_NAME>",
+        "arn:aws:s3:::<YOUR_BUCKET_NAME>/*"
+      ]
     }
   ]
 }
