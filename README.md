@@ -14,6 +14,10 @@ Before deploying this solution, ensure you have:
   - Access to AWS Management Console
 - An S3 bucket to store the exported logs (can be created before or after deployment)
 - List of CloudWatch Log Groups you want to export
+
+## Architecture Diagram
+
+![Diagram](./Screenshot 2025-03-21 at 7.12.22 PM.png)
   
 
 ## Deployment Steps
